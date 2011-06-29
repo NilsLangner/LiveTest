@@ -9,6 +9,8 @@
 
 namespace LiveTest\Cli;
 
+use LiveTest\Config\Constants\Processor;
+
 use Zend\Http\CookieJar;
 
 use LiveTest\ConfigurationException;
@@ -69,6 +71,8 @@ class Runner extends ArgumentRunner
    */
   private $runAllowed = true;
   
+  private $constantProcessor;
+  
   /**
    * This function intializes the runner. It sets the runId, inits the configuration
    * and registers the assigned listeners. Afterwards all listeners are notified. If
@@ -88,6 +92,8 @@ class Runner extends ArgumentRunner
     
     parent::__construct($arguments);
     
+    $this->initConstantProcessor();
+    
     $this->initConfig();
     $this->eventDispatcher->simpleNotify('LiveTest.Runner.InitConfig', array ('config' => $this->config));
     
@@ -95,6 +101,12 @@ class Runner extends ArgumentRunner
     $event = new Event('LiveTest.Runner.Init', array ('arguments' => $arguments));
     $this->eventDispatcher->notifyUntil($event);
     $this->runAllowed = !$event->isProcessed();
+  }
+  
+  private function initConstantProcessor( )
+  {
+  	$this->constantProcessor = new Processor();
+  	$this->eventDispatcher->simpleNotify( 'LiveTest.Runner.Core.InitConstantProcessor', array( 'constantProcessor' => $this->constantProcessor));  	
   }
   
   private function initCoreListener($arguments)
@@ -152,7 +164,10 @@ class Runner extends ArgumentRunner
       $currentConfig = new Yaml($this->getArgument('config'), true);
       $config = $config->merge($currentConfig);
     }
-    $this->config = $this->parseConfig($config->toArray());
+    
+    $processedConfig = $this->constantProcessor->processRecursivly($config->toArray());
+    
+    $this->config = $this->parseConfig($processedConfig);
     $this->eventDispatcher->simpleNotify('LiveTest.Runner.ConfigInitialized', array ('config' => $this->config));
   }
   

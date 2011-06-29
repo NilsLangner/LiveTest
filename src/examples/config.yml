@@ -2,7 +2,7 @@ DefaultDomain: http://www.phphatesme.com
 
 IncludePaths:
  - /tmp
- - c:/
+ - c:/ %test% %test2%
  
 MemoryLimit: 512M
 
