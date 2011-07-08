@@ -17,38 +17,18 @@ class Expect
     $this->missedAssertCallback = $missedAssertCallback;
   }
 
+  public function markAsFailed()
+  {
+    $this->failed = true;
+  }
+
   /**
    * @return Expect
    */
   public function __invoke($expectedElement)
   {
     $this->expectedElement = $expectedElement;
-    return $this;
-  }
-
-  /**
-   * This method implements the Selenium RC protocol.
-   *
-   * @method unknown toContain()
-   * @method unknown toBeGreaterThan()
-   *
-   * @return Expect
-   */
-  public function __call($name, $arguments)
-  {
-    $fullName = __NAMESPACE__."\\Matchers\\" . ucfirst($name);
-
-    if (class_exists($fullName, true))
-    {
-      $this->failed = call_user_func_array(array ($fullName, 'match'),
-                                           array_merge( array($this->expectedElement),$arguments));
-    }
-    else
-    {
-    	throw new \Exception('The matcher "'.$name.'" was not found.');
-    }
-
-    return $this;
+    return new Matcher($this, $expectedElement);
   }
 
   /**
