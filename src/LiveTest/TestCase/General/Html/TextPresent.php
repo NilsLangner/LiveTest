@@ -43,9 +43,8 @@ class TextPresent extends TestCase
   {
     $htmlCode = $htmlDocument->getHtml();
 
-    if (strpos($htmlCode, $this->text) === false)
-    {
-      throw new Exception('The given text "' . $this->text . '" was not found.');
-    }
+    $this->expect($htmlCode)
+         ->toContain($this->text)
+         ->otherwise('The given text "' . $this->text . '" was not found.');
   }
 }

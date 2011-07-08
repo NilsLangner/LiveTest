@@ -9,6 +9,8 @@
 
 namespace LiveTest\TestCase\General\Http;
 
+use LiveTest\TestCase\General\AssertAwareTestCase;
+
 use Base\Http\Request\Request;
 use Base\Http\Response\Response;
 
@@ -20,7 +22,7 @@ use LiveTest\TestCase\Exception;
  *
  * @author Nils Langner
  */
-class SuccessfulStatusCode implements TestCase
+class SuccessfulStatusCode extends AssertAwareTestCase
 {
   /**
    * This function checks if the status code is < 400
@@ -30,9 +32,8 @@ class SuccessfulStatusCode implements TestCase
   public function test(Response $response, Request $request)
   {
     $status = (int)$response->getStatus();
-    if ($status >= 400 )
-    {
-      throw new Exception('The http status code ' . $status . ' was found (<400 expected).');
-    }
+    $this->expect(400)
+         ->toBeGreaterThan($status)
+         ->otherwise('The http status code ' . $status . ' was found (<400 expected).');
   }
 }

@@ -28,6 +28,7 @@ class LoadTime implements TestCase
   public function test(Response $response, Request $request)
   {
     $loadTime = $response->getDuration();
+
     if ($loadTime > $this->maxLoadTime)
     {
       throw new Exception('The time to load the website is too big (current: ' . $loadTime . ', max: ' . $this->maxLoadTime . ')');

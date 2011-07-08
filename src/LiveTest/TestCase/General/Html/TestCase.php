@@ -9,12 +9,14 @@
 
 namespace LiveTest\TestCase\General\Html;
 
+use LiveTest\TestCase\General\AssertAwareTestCase;
+
 use Base\Http\Request\Request;
 use Base\Www\Html\Document;
 
 use Base\Http\Response\Response;
 
-abstract class TestCase implements \LiveTest\TestCase\TestCase
+abstract class TestCase extends AssertAwareTestCase
 {
   private $httpResponse;
   private $request;
