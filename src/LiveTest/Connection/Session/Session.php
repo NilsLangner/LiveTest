@@ -12,12 +12,8 @@ namespace LiveTest\Connection\Session;
 use LiveTest\Connection\Request\Request;
 
 /**
- * This class contains all information about the tests and the depending pages.
- *
  * @author Nils Langner
  */
-use LiveTest\Config\PageManipulator\PageManipulator;
-
 class Session
 {
   private $pageRequests = array ();
@@ -25,6 +21,11 @@ class Session
 
   public function __construct($allowCookies = false)
   {
+    if (! is_bool($allowCookies))
+    {
+      throw new \InvalidArgumentException('The given parameter must be bool.');
+    }
+
     $this->allowCookies = $allowCookies;
   }
 

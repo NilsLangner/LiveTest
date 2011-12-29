@@ -223,8 +223,18 @@ class TestSuite implements Config
     $this->testCases[$name] = $testCaseConfig;
   }
 
+  public function hasTestCaseConfig()
+  {
+    return count($this->testCases) > 0;
+  }
+
   public function getCurrentTestCaseConfig()
   {
+    if (! $this->hasTestCaseConfig())
+    {
+      // @todo use special exeption
+      throw new \Exception('No test case was created. See createTestCase().');
+    }
     return end($this->testCases);
   }
 

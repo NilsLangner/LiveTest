@@ -35,4 +35,9 @@ class TestCaseConfig
   {
     return $this->sessionNames;
   }
+
+  public function isDefaultSessionUsed()
+  {
+
+  }
 }
