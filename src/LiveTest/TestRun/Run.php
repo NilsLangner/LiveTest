@@ -95,20 +95,18 @@ class Run
       {
         $testCase = $this->getInitializedTestCase($test);
         $testCase->test($response, $testSet->getRequest());
-      }
-      catch (\LiveTest\TestCase\Exception $e)
+      } catch (\LiveTest\TestCase\Exception $e)
       {
         $runStatus = Result::STATUS_FAILED;
         $runMessage = $e->getMessage();
-      }
-      catch (\Exception $e)
+      } catch (\Exception $e)
       {
         $runStatus = Result::STATUS_ERROR;
         $runMessage = $e->getMessage();
       }
       $result = new Result($test, $runStatus, $runMessage, $testSet->getRequest(), $response, $sessionName);
       // @todo response is part of the result so it should not be handled separatly
-      $this->eventDispatcher->simpleNotify('LiveTest.Run.HandleResult', array ('result' => $result, 'response' => $response));
+      $this->eventDispatcher->simpleNotify('LiveTest.Run.HandleResult', array('result' => $result, 'response' => $response));
     }
   }
 
@@ -124,27 +122,31 @@ class Run
     $connectionStatusValue = ConnectionStatus::SUCCESS;
     $connectionStatusMessage = '';
 
+    $request = $testSet->getRequest();
+
+    $this->eventDispatcher->simpleNotify('LiveTest.Run.PrepareRequest', array('request' => $request));
+
     try
     {
       $client = $this->httpClients[$sessionName];
-
       // the client must be reset, otherwise curl dies
       $client->resetParameters();
-      $response = $client->request($testSet->getRequest());
-    }
-    catch (\Zend\Http\Exception $e)
+
+      $response = $client->request($request);
+
+    } catch (\Zend\Http\Exception $e)
     {
       $connectionStatusValue = ConnectionStatus::ERROR;
       $connectionStatusMessage = $e->getMessage();
     }
 
-    $connectionStatus = new ConnectionStatus($connectionStatusValue, $testSet->getRequest(), $connectionStatusMessage);
+    $connectionStatus = new ConnectionStatus($connectionStatusValue, $request, $connectionStatusMessage);
     if (isset($response))
     {
       $connectionStatus->setResponse($response);
     }
 
-    $this->eventDispatcher->simpleNotify('LiveTest.Run.HandleConnectionStatus', array ('connectionStatus' => $connectionStatus));
+    $this->eventDispatcher->simpleNotify('LiveTest.Run.HandleConnectionStatus', array('connectionStatus' => $connectionStatus));
 
     if ($connectionStatusValue === ConnectionStatus::SUCCESS)
     {
@@ -160,7 +162,7 @@ class Run
    */
   public function run()
   {
-    $this->eventDispatcher->simpleNotify('LiveTest.Run.PreRun', array ('properties' => $this->properties));
+    $this->eventDispatcher->simpleNotify('LiveTest.Run.PreRun', array('properties' => $this->properties));
 
     // @todo move timer to runner.php
     $timer = new Timer();
@@ -175,6 +177,6 @@ class Run
 
     $information = new Information($timer->stop(), $this->properties->getDefaultDomain());
 
-    $this->eventDispatcher->simpleNotify('LiveTest.Run.PostRun', array ('information' => $information));
+    $this->eventDispatcher->simpleNotify('LiveTest.Run.PostRun', array('information' => $information));
   }
 }

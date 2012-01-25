@@ -26,6 +26,8 @@ namespace LiveTest\Config\Tags\TestSuite;
  *
  * @author Mike Lohmann & Nils Langner
  */
+use LiveTest\Connection\Session\WarmUp\NullWarmUp;
+
 use LiveTest\Connection\Session\Session;
 
 class Sessions extends Base

@@ -29,7 +29,7 @@ class TestSuite implements Config
    * The created tests.
    * @var array
    */
-  private $testCases = array ();
+  private $testCases = array();
 
   /**
    * The directory of the yaml file this configuration was created from
@@ -43,10 +43,10 @@ class TestSuite implements Config
    */
   private $parentConfig;
 
-  private $sessions = array ();
+  private $sessions = array();
 
   private $currentSession;
-  private $_currentSessionName;
+  private $currentSessionName;
 
   private $_defaultSession;
 
@@ -59,7 +59,7 @@ class TestSuite implements Config
    */
   private $defaultDomain = null;
 
-  private $pageManipulators = array ();
+  private $pageManipulators = array();
 
   /**
    * Set the parent config if needed.
@@ -100,20 +100,26 @@ class TestSuite implements Config
   public function setCurrentSession($sessionName)
   {
     $this->currentSession = $this->sessions[$sessionName];
+    $this->currentSessionName = $sessionName;
   }
 
   public function getCurrentSession()
   {
-    if (! $this->hasCurrentSession())
+    if (!$this->hasCurrentSession())
     {
       throw new \Exception('No session has been added.');
     }
     return $this->currentSession;
   }
 
+  public function getCurrentSessionName()
+  {
+    return $this->currentSessionName;
+  }
+
   public function hasCurrentSession()
   {
-    return ! is_null($this->currentSession);
+    return !is_null($this->currentSession);
   }
 
   public function _getNewSession($sessionName, $isCurrentSession = true)
@@ -130,7 +136,7 @@ class TestSuite implements Config
 
   public function _setCurrentSession($sessionName)
   {
-    if (! $this->hasSession($sessionName))
+    if (!$this->hasSession($sessionName))
     {
       throw new ConfigurationException('The session you are trying to access is not available (' . $sessionName . ').');
     }
@@ -154,8 +160,8 @@ class TestSuite implements Config
 
   public function _getSessions()
   {
-    $parentSessions = array ();
-    if (! is_null($this->parentConfig))
+    $parentSessions = array();
+    if (!is_null($this->parentConfig))
     {
       $parentSessions = $this->parentConfig->getSessions();
     }
@@ -230,7 +236,7 @@ class TestSuite implements Config
 
   public function getCurrentTestCaseConfig()
   {
-    if (! $this->hasTestCaseConfig())
+    if (!$this->hasTestCaseConfig())
     {
       // @todo use special exeption
       throw new \Exception('No test case was created. See createTestCase().');

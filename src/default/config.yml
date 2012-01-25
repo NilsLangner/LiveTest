@@ -13,7 +13,7 @@ Listener:
   
  phmLabs_Statistics:
   class: LiveTest\Packages\Website\Listener\Statistics
-
+  
  Upgrade:
   class: LiveTest\Packages\Upgrade\Listener\Upgrade
 

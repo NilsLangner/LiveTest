@@ -36,7 +36,7 @@ class Packages extends Base
 
     foreach ( $paths as $path )
     {
-      set_include_path(get_include_path() . PATH_SEPARATOR . $path);      
+      set_include_path(get_include_path() . PATH_SEPARATOR . $path);
     }
 
     spl_autoload_register(array ($this, 'autoload' ));
@@ -44,6 +44,7 @@ class Packages extends Base
 
   public function autoload($classname)
   {
+
     foreach ( $this->includedPaths as $path )
     {
       $classPath = $path . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $classname) . '.php';

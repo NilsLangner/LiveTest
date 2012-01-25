@@ -9,6 +9,10 @@
 
 namespace LiveTest\Connection\Session;
 
+use Base\Http\Client\Client;
+
+use LiveTest\Connection\Session\WarmUp\WarmUp;
+
 use LiveTest\Connection\Request\Request;
 
 /**
@@ -16,17 +20,24 @@ use LiveTest\Connection\Request\Request;
  */
 class Session
 {
-  private $pageRequests = array ();
+  private $pageRequests = array();
   private $allowCookies;
+
+  private $extendedSessions = array();
 
   public function __construct($allowCookies = false)
   {
-    if (! is_bool($allowCookies))
+    if (!is_bool($allowCookies))
     {
       throw new \InvalidArgumentException('The given parameter must be bool.');
     }
 
     $this->allowCookies = $allowCookies;
+  }
+
+  public function extendSession(Session $session)
+  {
+    $this->extendedSessions[] = $session;
   }
 
   public function includePageRequest(Request $pageRequest)
@@ -44,7 +55,15 @@ class Session
 
   public function getPageRequests()
   {
-    return $this->pageRequests;
+    $pageRequests = $this->pageRequests;
+
+    foreach ($this->extendedSessions as $extendedSession)
+    {
+      $sessionPageRequests = $extendedSession->getPageRequests();
+      $pageRequests = array_merge($pageRequests, $sessionPageRequests);
+    }
+
+    return $pageRequests;
   }
 
   public function areCookiesAllowed()

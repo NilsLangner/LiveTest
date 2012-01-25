@@ -195,4 +195,14 @@ class Symfony implements Request
   {
     return $this->parameters;
   }
+
+  public function removeParameter($key)
+  {
+  	unset( $this->parameters[$key]);
+  }
+
+  public function addParameter($key, $value)
+  {
+  	$this->parameters[$key] = $value;
+  }
 }
