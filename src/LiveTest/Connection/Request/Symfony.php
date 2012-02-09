@@ -114,6 +114,7 @@ class Symfony implements Request
    */
   private static function prepareRequestParameters(array $parameters)
   {
+
     $mergedRequestParameters = array ();
     foreach ($parameters as $aRequest)
     {

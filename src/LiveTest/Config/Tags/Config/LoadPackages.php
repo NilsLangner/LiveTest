@@ -8,7 +8,6 @@
  */
 
 namespace LiveTest\Config\Tags\Config;
-use Base\Config\Yaml;
 
 use LiveTest\Config\ConfigConfig;
 
@@ -23,34 +22,29 @@ use LiveTest\Config\ConfigConfig;
  *
  * @author Nils Langner
  */
-class Packages extends Base
+class LoadPackages extends Base
 {
-  private $namespaceRoots = array();
+  private $includedPaths = array();
 
   /**
    * @todo check if the directory really exists
    * @see LiveTest\Config\Tags\Config.Base::doProcess()
    */
-  protected function doProcess(ConfigConfig $config, $packages)
+  protected function doProcess(ConfigConfig $config, $paths)
   {
-    foreach ($packages as $key => $package)
+    $this->includedPaths = $paths;
+
+    foreach ( $paths as $path )
     {
-      $packageName = $package . '/package.yml';
-      $yaml = new Yaml($packageName);
-      $packageArray = $yaml->toArray();
-      if (array_key_exists('NamespaceRoot', $packageArray))
-      {
-        $this->namespaceRoots[] = $package . DIRECTORY_SEPARATOR. $packageArray['NamespaceRoot'];
-        unset($packageArray['NamespaceRoot']);
-      }
-      $this->getParser()->parse($packageArray, $config);
+      set_include_path(get_include_path() . PATH_SEPARATOR . $path);
     }
-    spl_autoload_register(array($this, 'autoload'));
+
+    spl_autoload_register(array ($this, 'autoload' ));
   }
 
   public function autoload($classname)
   {
-    foreach ($this->namespaceRoots as $path)
+    foreach ( $this->includedPaths as $path )
     {
       $classPath = $path . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $classname) . '.php';
       if (file_exists($classPath))

@@ -8,7 +8,6 @@
  */
 
 namespace LiveTest\Config\Parser;
-
 use LiveTest\Config\Config;
 
 /**
@@ -21,6 +20,10 @@ use LiveTest\Config\Config;
 class Parser
 {
   private $standardNameSpace;
+
+  private static $tags = array();
+
+  private $shortcuts = array();
 
   /**
    * Sets the standard namespace. The namespace is used to find first level tags. It
@@ -66,14 +69,23 @@ class Parser
    */
   private function getTagClassName($tag)
   {
-    if (strpos($tag, '\\') === false)
-    {
-      $className = $this->standardNameSpace . $tag;
-    }
-    else
+    if (strpos($tag, '\\') !== false)
     {
       $className = $tag;
     }
+    else if (array_key_exists($tag, self::$tags))
+    {
+      $className = self::$tags[$tag];
+    }
+    else
+    {
+      $className = $this->standardNameSpace . $tag;
+    }
     return $className;
+  }
+
+  public static function registerTag($tag, $classname)
+  {
+    self::$tags[$tag] = $classname;
   }
 }

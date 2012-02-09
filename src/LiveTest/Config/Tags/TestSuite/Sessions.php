@@ -18,8 +18,8 @@ namespace LiveTest\Config\Tags\TestSuite;
  * user_handling:
  * Pages:
  * - /login.php:
- * post:
  * key1: value1
+ * post:
  * key2: value2
  * - /index.php
  *
@@ -38,7 +38,6 @@ class Sessions extends Base
   protected function doProcess(\LiveTest\Config\TestSuite $config, $sessions)
   {
     // @todo $hasDefaultSession = false;
-
     foreach ($sessions as $sessionName => $sessionParameter)
     {
       if (array_key_exists('AllowCookies', $sessionParameter))
@@ -51,6 +50,7 @@ class Sessions extends Base
       }
 
       $session = new Session($allowCookies);
+
       $config->addSession($sessionName, $session);
       $config->setCurrentSession($sessionName);
 

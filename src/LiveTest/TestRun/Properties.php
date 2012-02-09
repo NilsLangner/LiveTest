@@ -94,7 +94,7 @@ class Properties
       {
         if (! $this->config->hasSession($sessionName))
         {
-          throw new ConfigurationException('The useSession argument ("'.$sessionName.'") is not defined.');
+          throw new ConfigurationException('Unknown session ("'.$sessionName.'") referred by "'.$testCaseConfigName.'" testcase. Please check your configuration.');
         }
 
         $session = $this->config->getSession($sessionName);
